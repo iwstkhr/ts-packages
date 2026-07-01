@@ -1,6 +1,7 @@
 name: Publish
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows:
       - Check
@@ -10,20 +11,20 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
   publish:
     name: Publish packages
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
       - name: Setup mise
         uses: jdx/mise-action@v4
@@ -33,24 +34,29 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Check package version
-        id: package-version
+      - name: Publish unpublished packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          package_name="$(node -p "require('./packages/ts-memoize/package.json').name")"
-          package_version="$(node -p "require('./packages/ts-memoize/package.json').version")"
+          for package_json in packages/*/package.json; do
+            package_name="$(node -p "require('./$package_json').name")"
+            package_version="$(node -p "require('./$package_json').version")"
+            package_basename="${package_name##*/}"
+            tag_name="$package_basename-v$package_version"
 
-          if npm view "$package_name@$package_version" version --registry=https://npm.pkg.github.com/ >/dev/null 2>&1; then
-            echo "Package $package_name@$package_version is already published."
-            echo "published=true" >> "$GITHUB_OUTPUT"
-          else
+            if npm view "$package_name@$package_version" version --registry=https://npm.pkg.github.com/ >/dev/null 2>&1; then
+              echo "Package $package_name@$package_version is already published."
+              continue
+            fi
+
             echo "Package $package_name@$package_version is not published yet."
-            echo "published=false" >> "$GITHUB_OUTPUT"
-          fi
+            npm publish --workspace "$package_name"
 
-      - name: Publish package
-        if: ${{ steps.package-version.outputs.published == 'false' }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm publish --workspace @iwstkhr/ts-memoize
+            if git ls-remote --exit-code --tags origin "refs/tags/$tag_name" >/dev/null 2>&1; then
+              echo "Tag $tag_name already exists."
+              continue
+            fi
+
+            git tag "$tag_name"
+            git push origin "$tag_name"
+          done
