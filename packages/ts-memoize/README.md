@@ -10,11 +10,13 @@ Arguments are compared with `JSON.stringify(args)`, so this helper is best suite
 
 ## Usage
 
-Configure the package scope for GitHub Packages:
+This package is published to GitHub Packages. Configure the package scope before installing:
 
 ```ini
 @iwstkhr:registry=https://npm.pkg.github.com/
 ```
+
+For private package access, authenticate npm with a GitHub token that can read packages.
 
 Install the package:
 
@@ -54,26 +56,31 @@ const message: string = memoized('TypeScript');
 
 ## Development
 
-Install dependencies:
+From the repository root, install dependencies:
 
 ```sh
-npm install
+npm ci
 ```
 
-Run tests:
+Run the package checks through npm workspaces:
 
 ```sh
-npm test
-```
-
-Run type checking:
-
-```sh
+npm run check
 npm run typecheck
-```
-
-Build the package:
-
-```sh
+npm test
 npm run build
 ```
+
+Run only this package's test suite:
+
+```sh
+npm test --workspace @iwstkhr/ts-memoize
+```
+
+Build only this package:
+
+```sh
+npm run build --workspace @iwstkhr/ts-memoize
+```
+
+When changing files in this package, update the package version in `package.json`. The repository enforces this with pre-commit and agent hooks.
