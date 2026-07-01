@@ -8,6 +8,7 @@
   "scripts": {
     "build": "npm run build --workspaces",
     "check": "biome check .",
+    "check:package-version": "node scripts/check-package-version.mjs",
     "check:write": "biome check --write .",
     "prepare": "husky",
     "test": "npm test --workspaces",

@@ -29,6 +29,9 @@ jobs:
       - name: Run Biome
         run: npm run check
 
+      - name: Check package versions
+        run: npm run check:package-version
+
       - name: Run typecheck
         run: npm run typecheck
 
