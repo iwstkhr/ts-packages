@@ -1,0 +1,56 @@
+name: Publish
+
+on:
+  workflow_run:
+    workflows:
+      - Check
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    name: Publish packages
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Setup mise
+        uses: jdx/mise-action@v4
+        with:
+          cache: true
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check package version
+        id: package-version
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          package_name="$(node -p "require('./packages/ts-memoize/package.json').name")"
+          package_version="$(node -p "require('./packages/ts-memoize/package.json').version")"
+
+          if npm view "$package_name@$package_version" version --registry=https://npm.pkg.github.com/ >/dev/null 2>&1; then
+            echo "Package $package_name@$package_version is already published."
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Package $package_name@$package_version is not published yet."
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish package
+        if: ${{ steps.package-version.outputs.published == 'false' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm publish --workspace @iwstkhr/ts-memoize
