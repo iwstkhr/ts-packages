@@ -28,4 +28,8 @@ pnpm-debug.log*
 # Editor and OS files
 .DS_Store
 .idea/
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
