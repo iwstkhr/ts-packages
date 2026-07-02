@@ -47,6 +47,54 @@ Check that package changes include a package version update:
 npm run check:package-version
 ```
 
+## Contributing
+
+This repository uses GitHub Flow:
+
+- Create a short-lived branch from `main`.
+- Open a pull request for review.
+- Merge the pull request into `main` after CI passes.
+- Keep `main` releasable.
+
+Use a lightweight Conventional Commits format for commit messages:
+
+```text
+<type>(optional-scope): <summary>
+```
+
+Common types:
+
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation-only change
+- `test`: Test change
+- `refactor`: Code change that does not alter behavior
+- `chore`: Maintenance, dependency, or metadata change
+- `ci`: CI configuration change
+
+Examples:
+
+```text
+feat(ts-memoize): add cache reset support
+fix(svg-to-png): handle invalid SVG input
+docs: update contributing instructions
+```
+
+Before opening a pull request, make sure the following checks pass:
+
+```sh
+npm run check
+npm run typecheck
+npm test
+npm run build
+```
+
+If your change touches a package under `packages/*`, update that package's `package.json` version in the same pull request and run:
+
+```sh
+npm run check:package-version
+```
+
 ## Version Updates
 
 When a package under `packages/*` is changed, update that package's `package.json` version in the same change. This is enforced by:
