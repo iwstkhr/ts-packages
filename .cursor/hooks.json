@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/track-source-edit.mjs",
+        "matcher": "Write|StrReplace"
+      }
+    ],
+    "stop": [
+      {
+        "command": ".cursor/hooks/prompt-related-updates.mjs",
+        "loop_limit": 3
+      }
+    ]
+  }
+}
