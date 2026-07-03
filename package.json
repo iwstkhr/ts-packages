@@ -1,0 +1,24 @@
+{
+  "name": "ts-packages",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "check": "biome check .",
+    "check:write": "biome check --write .",
+    "prepare": "husky",
+    "test": "npm test --workspaces",
+    "typecheck": "npm run typecheck --workspaces"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.2",
+    "@tsconfig/node24": "24.0.4",
+    "@types/node": "24.13.2",
+    "husky": "9.1.7",
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
+  }
+}
