@@ -1,0 +1,63 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Check
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  publish:
+    name: Publish packages
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Setup mise
+        uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac
+        with:
+          cache: true
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish unpublished packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for package_json in packages/*/package.json; do
+            package_name="$(node -p "require('./$package_json').name")"
+            package_version="$(node -p "require('./$package_json').version")"
+            package_basename="${package_name##*/}"
+            tag_name="$package_basename-v$package_version"
+
+            if npm view "$package_name@$package_version" version \
+              --registry=https://npm.pkg.github.com/ >/dev/null 2>&1; then
+              echo "Package $package_name@$package_version is already published."
+              continue
+            fi
+
+            echo "Package $package_name@$package_version is not published yet."
+            npm publish --workspace "$package_name"
+
+            if git ls-remote --exit-code --tags origin "refs/tags/$tag_name" >/dev/null 2>&1; then
+              echo "Tag $tag_name already exists."
+              continue
+            fi
+
+            git tag "$tag_name"
+            git push origin "$tag_name"
+          done
