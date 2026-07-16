@@ -14,15 +14,15 @@
     "typecheck": "npm run typecheck --workspaces"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.2",
+    "@biomejs/biome": "2.5.3",
     "@secretlint/secretlint-rule-preset-recommend": "13.0.2",
     "@tsconfig/node24": "24.0.4",
-    "@types/node": "24.13.2",
+    "@types/node": "24.13.3",
     "husky": "9.1.7",
     "lint-staged": "17.0.8",
-    "markdownlint": "0.41.0",
+    "markdownlint": "0.41.1",
     "secretlint": "13.0.2",
     "typescript": "6.0.3",
-    "vitest": "4.1.9"
+    "vitest": "4.1.10"
   }
 }
