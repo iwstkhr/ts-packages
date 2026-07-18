@@ -14,7 +14,7 @@
     "typecheck": "npm run typecheck --workspaces"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.3",
+    "@biomejs/biome": "2.5.4",
     "@secretlint/secretlint-rule-preset-recommend": "13.0.2",
     "@tsconfig/node24": "24.0.4",
     "@types/node": "24.13.3",
