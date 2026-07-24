@@ -1,6 +1,10 @@
 ---
 name: sync-change-artifacts
-description: ソースコード変更時にテスト・GitHub Actions・ドキュメントを同期更新する。packages/*/src の実装変更、新機能追加、API 変更、ビルド手順変更時に使用する。Use when changing source code, adding features, or modifying package behavior.
+description: >-
+  ソースコード変更時にテスト・GitHub Actions・ドキュメントを同期更新する。
+  packages/*/src の実装変更、新機能追加、API 変更、ビルド手順変更時に使用する。
+  Use when changing source code, adding features, or modifying package
+  behavior.
 ---
 
 # Code Change Checklist
@@ -31,6 +35,7 @@ Task Progress:
 | バグ修正 | 再発防止の回帰テストを追加 |
 
 **規約**:
+
 - Vitest（`describe` / `test` / `expect` / `vi`）
 - テストファイルはソースと同じ `src/` 配下、`* .spec.ts` 命名
 - `afterEach` で `vi.clearAllMocks()` など既存パターンに合わせる
@@ -55,12 +60,13 @@ npm test --workspace @iwstkhr/<pkg-name>    # 単一パッケージ
 **現行の Check ワークフロー**（変更時はこれと整合させる）:
 
 1. `npm ci`
-2. `npm run check`（Biome）
-3. `npm run typecheck`
-4. `npm test`
-5. `npm run build`
+1. `npm run check`（Biome）
+1. `npm run typecheck`
+1. `npm test`
+1. `npm run build`
 
 **判断基準**:
+
 - `package.json` の scripts 変更 → check ワークフローの step を見直す
 - 新パッケージ追加 → publish ループ（`packages/*/package.json`）で自動対象になるが、README の公開説明を確認
 - `mise.toml` の Node バージョン変更 → mise-action の前提が変わらないか確認
@@ -76,12 +82,14 @@ npm test --workspace @iwstkhr/<pkg-name>    # 単一パッケージ
 | `packages/<pkg>/package.json` の `description` | パッケージの概要が変わった場合 |
 
 **更新が必要な典型例**:
+
 - 公開 API（export）の追加・変更・削除
 - 引数・戻り値・エラー条件の変更
 - インストール方法・registry 設定の変更
 - 制約事項（例: `JSON.stringify` による引数比較）の追加
 
-ドキュメントのみの変更は `docs:`、テストのみは `test:`、CI のみは `ci:` のコミットタイプを使う（[README.md](../../README.md) の Contributing 参照）。
+ドキュメントのみの変更は `docs:`、テストのみは `test:`、CI のみは `ci:` の
+コミットタイプを使う（[README.md](../../README.md) の Contributing 参照）。
 
 ## 4. 検証
 
@@ -94,7 +102,7 @@ npm test
 npm run build
 ```
 
-pre-commit（Husky）で Biome が走る。PR 前に上記 4 コマンドがすべて成功していること。
+pre-commit で Biome などが走る（`.pre-commit-config.yaml`）。PR 前に上記 4 コマンドがすべて成功していること。
 
 ## スコープ外（更新不要な変更）
 
@@ -107,6 +115,7 @@ pre-commit（Husky）で Biome が走る。PR 前に上記 4 コマンドがす�
 ## 新パッケージ追加時
 
 1. `packages/<pkg>/src/` に実装と `*.spec.ts` を追加
-2. `packages/<pkg>/README.md` を作成
-3. ルート `README.md` の Packages セクションに追記
-4. `npm test` / `npm run build` がワークスペース経由で通ることを確認（check.yml の変更不要なことが多い）
+1. `packages/<pkg>/README.md` を作成
+1. ルート `README.md` の Packages セクションに追記
+1. `npm test` / `npm run build` がワークスペース経由で通ることを確認
+   （check.yml の変更不要なことが多い）
