@@ -20,13 +20,13 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iwstkhr/ts-memoize.git",
+    "url": "git+https://github.com/iwstkhr/ts-packages.git",
     "directory": "packages/svg-to-png"
   },
   "bugs": {
-    "url": "https://github.com/iwstkhr/ts-memoize/issues"
+    "url": "https://github.com/iwstkhr/ts-packages/issues"
   },
-  "homepage": "https://github.com/iwstkhr/ts-memoize/tree/main/packages/svg-to-png#readme",
+  "homepage": "https://github.com/iwstkhr/ts-packages/tree/main/packages/svg-to-png#readme",
   "keywords": [
     "svg",
     "png",
