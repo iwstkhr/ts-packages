@@ -9,7 +9,6 @@
     "build": "npm run build --workspaces",
     "check": "biome check .",
     "check:write": "biome check --write .",
-    "prepare": "husky",
     "test": "npm test --workspaces",
     "typecheck": "npm run typecheck --workspaces"
   },
@@ -18,10 +17,6 @@
     "@secretlint/secretlint-rule-preset-recommend": "13.0.2",
     "@tsconfig/node24": "24.0.4",
     "@types/node": "24.13.3",
-    "husky": "9.1.7",
-    "lint-staged": "17.1.0",
-    "markdownlint": "0.41.1",
-    "secretlint": "13.0.2",
     "typescript": "6.0.3",
     "vitest": "4.1.10"
   }
