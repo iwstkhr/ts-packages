@@ -9,6 +9,7 @@
   "timezone": "Asia/Tokyo",
   "dependencyDashboard": true,
   "rebaseWhen": "conflicted",
+  "minimumReleaseAge": "7 days",
   "lockFileMaintenance": {
     "enabled": true,
     "automerge": true,
