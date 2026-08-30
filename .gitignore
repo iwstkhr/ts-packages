@@ -25,8 +25,8 @@ pnpm-debug.log*
 .yarn/
 .pnpm-store/
 
-# Cursor hook state
-.cursor/hooks/.pending-source-edits.json
+# Codex hook state
+.codex/hooks/.pending-source-edits.json
 
 # Editor and OS files
 .DS_Store

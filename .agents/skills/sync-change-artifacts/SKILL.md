@@ -11,7 +11,7 @@ description: >-
 
 ソースコード（`packages/*/src/**` や `scripts/**`）を変更したら、実装だけでなく関連成果物も同じ PR で更新する。
 
-`.cursor/hooks/` のフックが変更を検出した場合も、このスキルに従う。
+`.codex/hooks/` の Stop フックが変更を検出した場合も、このスキルに従う。
 
 ## チェックリスト
 
@@ -89,7 +89,7 @@ npm test --workspace @iwstkhr/<pkg-name>    # 単一パッケージ
 - 制約事項（例: `JSON.stringify` による引数比較）の追加
 
 ドキュメントのみの変更は `docs:`、テストのみは `test:`、CI のみは `ci:` の
-コミットタイプを使う（[README.md](../../README.md) の Contributing 参照）。
+コミットタイプを使う（[README.md](../../../README.md) の Contributing 参照）。
 
 ## 4. 検証
 
