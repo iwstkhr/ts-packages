@@ -13,6 +13,9 @@ This package uses browser `document`, `Image`, and Canvas APIs.
 `svgToPngBlob` does not. It does not include a server-side SVG renderer, so
 Node.js usage requires a browser-like rendering environment.
 
+SVG strings also require `DOMParser` unless both `width` and `height` are
+provided in the options. SVG elements require `XMLSerializer`.
+
 ## Usage
 
 This package is published to GitHub Packages. Configure the package scope
@@ -51,7 +54,7 @@ document.body.append(image);
 
 ### `svgToPng(input, options?)`
 
-Renders SVG to PNG and returns a PNG data URL.
+Renders SVG to PNG and returns `Promise<string>` containing a PNG data URL.
 
 - `input`: SVG markup string or `SVGSVGElement`
 - `options.backgroundColor`: optional canvas background fill before drawing
@@ -64,16 +67,37 @@ Renders SVG to PNG and returns a PNG data URL.
 - `options.width`: optional output source width. Defaults to the SVG `width`
   or `viewBox` width
 
-The final canvas size is `width * scale` by `height * scale`.
+The final canvas size is `Math.round(width * scale)` by
+`Math.round(height * scale)`.
+
+Width and height are resolved independently: an explicit option takes
+precedence, then the SVG dimension, then the corresponding `viewBox`
+dimension. Setting only one dimension does not automatically calculate the
+other from the aspect ratio. For SVG strings, dimension attributes use their
+leading numeric value; units and percentages are not converted (for example,
+`100%` is read as `100`). For SVG elements, the browser's `baseVal.value` is
+used, with a `viewBox` fallback when it is zero.
+
+Resolved dimensions and `scale` must be greater than zero; non-positive
+values reject the promise. Rendering also rejects if the browser APIs are
+unavailable, the SVG image fails to load, the 2D context cannot be created,
+or PNG encoding fails.
 
 ### `svgToPngBlob(input, options?)`
 
-Renders SVG to PNG and returns a PNG `Blob`. This path does not use
-`FileReader`.
+Renders SVG to PNG and returns `Promise<Blob>`. It accepts the same input and
+options as `svgToPng`. This path does not use `FileReader`.
 
 ### `svgToDataUrl(svg)`
 
-Encodes SVG markup as an SVG image data URL.
+Encodes an SVG markup string as an SVG image data URL and returns it
+synchronously. This helper does not require browser APIs or validate the SVG.
+
+### Types
+
+The package exports `SvgInput` (`string | SVGSVGElement`), `SvgSize`
+(`{ height: number; width: number }`), and `SvgToPngOptions` for TypeScript
+consumers.
 
 ## Development
 
@@ -103,3 +127,6 @@ Build only this package:
 ```sh
 npm run build --workspace @iwstkhr/svg-to-png
 ```
+
+For release and versioning instructions, see
+[Publishing](../../README.md#publishing) in the repository README.

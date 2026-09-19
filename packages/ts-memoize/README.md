@@ -57,12 +57,23 @@ const message: string = memoized('TypeScript');
 
 - Only the most recent call is cached.
 - Different arguments replace the previous cache entry.
-- Promise-returning functions are cached by promise value. A rejected promise
-  is dropped from the cache so the next call with the same arguments runs
-  again.
+- Promise-returning functions reuse the same promise for matching arguments,
+  including while it is pending. Once a rejection is handled, that promise
+  is dropped from the cache so the next call runs again. A rejection from an
+  older call does not clear a newer cache entry.
+- Synchronous exceptions are not cached; the previous cache entry is retained.
 - `undefined`, `null`, `NaN`, and infinite numbers are distinct cache keys.
 - Arguments must still be serializable with `JSON.stringify` (for example, no
   circular references or `BigInt` values).
+
+Comparison uses serialized values, not object identity or general deep
+equality. Property order can affect the key, and values such as functions,
+symbols, `Map`, and `Set` are not distinguished reliably. Avoid objects with
+the reserved `__tsMemoizeType` property: they can collide with the markers
+used for `undefined`, `NaN`, `Infinity`, and `-Infinity`.
+
+The wrapper does not forward a method's `this` receiver. Bind methods before
+passing them to `memoize` if they depend on `this`.
 
 ## Development
 
@@ -93,5 +104,5 @@ Build only this package:
 npm run build --workspace @iwstkhr/ts-memoize
 ```
 
-When changing files in this package, update the package version in
-`package.json`. The repository enforces this with pre-commit and agent hooks.
+For release and versioning instructions, see
+[Publishing](../../README.md#publishing) in the repository README.

@@ -11,7 +11,7 @@ This repository is an npm workspaces monorepo for small TypeScript libraries.
 
 ## Requirements
 
-- Node.js 24.18.0 and pre-commit 4.6.1, specified in [`mise.toml`](./mise.toml)
+- Node.js 24.20.0 and pre-commit 4.6.2, specified in [`mise.toml`](./mise.toml)
 - npm
 
 Use [mise](https://mise.jdx.dev/) to install the specified tools:
@@ -113,6 +113,14 @@ Packages are published to GitHub Packages, not the public npm registry.
 Publishing runs from `.github/workflows/publish.yml` after the `Check`
 workflow succeeds on `main`. The workflow can also be started manually from
 GitHub Actions.
+
+The workflow skips package versions that are already published. To release
+changes to a package, update its version in `packages/<package>/package.json`
+and keep `package-lock.json` in sync. Version bumps are not enforced by the
+repository's pre-commit hooks.
+
+Before publishing each new version, the package's `prepublishOnly` script
+runs Biome, type checking, tests, and the build.
 
 Published package versions are tagged with each package basename and version:
 
