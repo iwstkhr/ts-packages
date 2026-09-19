@@ -57,6 +57,54 @@ describe('memoize', () => {
       expect(await memoizedAdd(3, 4)).toBe(7);
       expect(add.mock.calls).toHaveLength(2);
     });
+
+    test('does not keep a rejected promise in the cache', async () => {
+      const fn = vi
+        .fn(async (_value: number) => 'ok')
+        .mockRejectedValueOnce(new Error('fail'))
+        .mockResolvedValueOnce('ok');
+      const memoized = memoize(fn);
+
+      await expect(memoized(1)).rejects.toThrow('fail');
+      await expect(memoized(1)).resolves.toBe('ok');
+      expect(fn.mock.calls).toHaveLength(2);
+    });
+
+    test('reuses an in-flight promise for the same arguments', async () => {
+      let resolvePromise: ((value: string) => void) | undefined;
+      const fn = vi.fn(
+        (_key: string) =>
+          new Promise<string>((resolve) => {
+            resolvePromise = resolve;
+          }),
+      );
+      const memoized = memoize(fn);
+
+      const first = memoized('a');
+      const second = memoized('a');
+
+      expect(second).toBe(first);
+      expect(fn.mock.calls).toHaveLength(1);
+
+      resolvePromise?.('ok');
+      await expect(first).resolves.toBe('ok');
+    });
+
+    test('does not clear a newer cache entry when an older promise rejects', async () => {
+      const fn = vi
+        .fn(async (_value: number) => 'ok')
+        .mockRejectedValueOnce(new Error('fail'))
+        .mockResolvedValueOnce('ok');
+      const memoized = memoize(fn);
+
+      const first = memoized(1);
+      const second = memoized(2);
+
+      await expect(first).rejects.toThrow('fail');
+      await expect(second).resolves.toBe('ok');
+      await expect(memoized(2)).resolves.toBe('ok');
+      expect(fn.mock.calls).toHaveLength(2);
+    });
   });
 
   describe('When a function has no arguments', () => {

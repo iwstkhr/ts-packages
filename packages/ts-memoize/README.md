@@ -57,7 +57,9 @@ const message: string = memoized('TypeScript');
 
 - Only the most recent call is cached.
 - Different arguments replace the previous cache entry.
-- Promise-returning functions are cached by promise value.
+- Promise-returning functions are cached by promise value. A rejected promise
+  is dropped from the cache so the next call with the same arguments runs
+  again.
 - `undefined`, `null`, `NaN`, and infinite numbers are distinct cache keys.
 - Arguments must still be serializable with `JSON.stringify` (for example, no
   circular references or `BigInt` values).

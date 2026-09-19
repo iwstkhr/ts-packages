@@ -1,20 +1,30 @@
 export function memoize<Args extends unknown[], Result>(
   func: (...args: Args) => Result,
 ) {
-  let prevArgs: string;
-  let prevValue: Result;
+  let prevArgs: string | undefined;
+  let prevValue: Result | undefined;
 
   return (...args: Args): Result => {
     const currentArgs = serializeArgs(args);
-    if (prevArgs === currentArgs) {
-      return prevValue;
+    if (prevArgs !== undefined && prevArgs === currentArgs) {
+      return prevValue as Result;
     }
 
     const currentValue = func(...args);
 
     prevArgs = currentArgs;
     prevValue = currentValue;
-    return prevValue;
+
+    if (currentValue instanceof Promise) {
+      currentValue.catch(() => {
+        if (prevArgs === currentArgs && prevValue === currentValue) {
+          prevArgs = undefined;
+          prevValue = undefined;
+        }
+      });
+    }
+
+    return currentValue;
   };
 }
 
