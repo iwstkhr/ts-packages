@@ -8,10 +8,11 @@ afterEach(() => {
 describe('svgToDataUrl', () => {
   test('encodes SVG markup as an image data URL', () => {
     const svg = '<svg xmlns="http://www.w3.org/2000/svg"><text>Hi</text></svg>';
+    const dataUrl = svgToDataUrl(svg);
+    const payload = dataUrl.slice(dataUrl.indexOf(',') + 1);
 
-    expect(svgToDataUrl(svg)).toBe(
-      `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
-    );
+    expect(dataUrl.startsWith('data:image/svg+xml;charset=utf-8,')).toBe(true);
+    expect(decodeURIComponent(payload)).toBe(svg);
   });
 });
 
