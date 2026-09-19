@@ -4,19 +4,26 @@ A small browser TypeScript helper for rendering SVG images to PNG.
 
 ## Overview
 
-`svgToPng` accepts an SVG string or `SVGSVGElement`, draws it to a browser canvas, and returns a PNG data URL. `svgToPngBlob` uses the same rendering path and returns a PNG `Blob`.
+`svgToPng` accepts an SVG string or `SVGSVGElement`, draws it to a browser
+canvas, and returns a PNG data URL. `svgToPngBlob` uses the same rendering
+path and returns a PNG `Blob`.
 
-This package uses browser DOM, `Image`, and Canvas APIs. It does not include a server-side SVG renderer, so Node.js usage requires a browser-like rendering environment.
+This package uses browser `document`, `Image`, and Canvas APIs.
+`svgToPng` also needs `FileReader` to return a PNG data URL.
+`svgToPngBlob` does not. It does not include a server-side SVG renderer, so
+Node.js usage requires a browser-like rendering environment.
 
 ## Usage
 
-This package is published to GitHub Packages. Configure the package scope before installing:
+This package is published to GitHub Packages. Configure the package scope
+before installing:
 
 ```ini
 @iwstkhr:registry=https://npm.pkg.github.com/
 ```
 
-For private package access, authenticate npm with a GitHub token that can read packages.
+For private package access, authenticate npm with a GitHub token that can
+read packages.
 
 Install the package:
 
@@ -28,7 +35,8 @@ npm install @iwstkhr/svg-to-png
 import { svgToPng } from '@iwstkhr/svg-to-png';
 
 const svg =
-  '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="40"/></svg>';
+  '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">' +
+  '<circle cx="50" cy="50" r="40"/></svg>';
 const png = await svgToPng(svg, {
   backgroundColor: 'white',
   scale: 2,
@@ -46,17 +54,22 @@ document.body.append(image);
 Renders SVG to PNG and returns a PNG data URL.
 
 - `input`: SVG markup string or `SVGSVGElement`
-- `options.backgroundColor`: optional canvas background fill before drawing the SVG
-- `options.height`: optional output source height. Defaults to the SVG `height` or `viewBox` height
-- `options.quality`: optional encoder quality argument passed to `canvas.toBlob`
+- `options.backgroundColor`: optional canvas background fill before drawing
+  the SVG
+- `options.height`: optional output source height. Defaults to the SVG
+  `height` or `viewBox` height
+- `options.quality`: optional encoder quality argument passed to
+  `canvas.toBlob`
 - `options.scale`: optional pixel output scale. Defaults to `1`
-- `options.width`: optional output source width. Defaults to the SVG `width` or `viewBox` width
+- `options.width`: optional output source width. Defaults to the SVG `width`
+  or `viewBox` width
 
 The final canvas size is `width * scale` by `height * scale`.
 
 ### `svgToPngBlob(input, options?)`
 
-Renders SVG to PNG and returns a PNG `Blob`.
+Renders SVG to PNG and returns a PNG `Blob`. This path does not use
+`FileReader`.
 
 ### `svgToDataUrl(svg)`
 

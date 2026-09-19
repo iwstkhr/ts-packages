@@ -178,6 +178,12 @@ function canvasToBlob(canvas: HTMLCanvasElement, quality?: number) {
 }
 
 function blobToDataUrl(blob: Blob) {
+  if (typeof FileReader === 'undefined') {
+    throw new Error(
+      'svgToPng requires FileReader to convert a PNG blob to a data URL.',
+    );
+  }
+
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
 
@@ -193,13 +199,9 @@ function blobToDataUrl(blob: Blob) {
 }
 
 function assertBrowserSupport() {
-  if (
-    typeof document === 'undefined' ||
-    typeof Image === 'undefined' ||
-    typeof FileReader === 'undefined'
-  ) {
+  if (typeof document === 'undefined' || typeof Image === 'undefined') {
     throw new Error(
-      'svgToPng requires a browser environment with Canvas APIs.',
+      'svgToPng requires a browser environment with document and Image APIs.',
     );
   }
 }
