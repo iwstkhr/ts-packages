@@ -1,6 +1,6 @@
 {
   "name": "@iwstkhr/ts-memoize",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A small TypeScript memoization helper for caching the most recent function call.",
   "license": "MIT",
   "author": "Takahiro Iwasa",

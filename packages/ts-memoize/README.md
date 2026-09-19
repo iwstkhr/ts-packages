@@ -4,19 +4,25 @@ A small TypeScript memoization helper for caching the most recent function call.
 
 ## Overview
 
-`memoize` wraps a function and stores the result from the latest argument set. When the wrapped function is called again with the same arguments, the cached value is returned instead of calling the original function again.
+`memoize` wraps a function and stores the result from the latest argument
+set. When the wrapped function is called again with the same arguments, the
+cached value is returned instead of calling the original function again.
 
-Arguments are compared with `JSON.stringify(args)`, so this helper is best suited for simple JSON-serializable arguments.
+Arguments are compared with a JSON-based serializer that distinguishes
+`undefined`, `null`, `NaN`, and infinite numbers. The helper is still best
+suited for simple JSON-serializable arguments.
 
 ## Usage
 
-This package is published to GitHub Packages. Configure the package scope before installing:
+This package is published to GitHub Packages. Configure the package scope
+before installing:
 
 ```ini
 @iwstkhr:registry=https://npm.pkg.github.com/
 ```
 
-For private package access, authenticate npm with a GitHub token that can read packages.
+For private package access, authenticate npm with a GitHub token that can
+read packages.
 
 Install the package:
 
@@ -52,7 +58,9 @@ const message: string = memoized('TypeScript');
 - Only the most recent call is cached.
 - Different arguments replace the previous cache entry.
 - Promise-returning functions are cached by promise value.
-- Arguments must be safely serializable with `JSON.stringify`.
+- `undefined`, `null`, `NaN`, and infinite numbers are distinct cache keys.
+- Arguments must still be serializable with `JSON.stringify` (for example, no
+  circular references or `BigInt` values).
 
 ## Development
 
@@ -83,4 +91,5 @@ Build only this package:
 npm run build --workspace @iwstkhr/ts-memoize
 ```
 
-When changing files in this package, update the package version in `package.json`. The repository enforces this with pre-commit and agent hooks.
+When changing files in this package, update the package version in
+`package.json`. The repository enforces this with pre-commit and agent hooks.

@@ -5,7 +5,7 @@ export function memoize<Args extends unknown[], Result>(
   let prevValue: Result;
 
   return (...args: Args): Result => {
-    const currentArgs = JSON.stringify(args);
+    const currentArgs = serializeArgs(args);
     if (prevArgs === currentArgs) {
       return prevValue;
     }
@@ -16,4 +16,30 @@ export function memoize<Args extends unknown[], Result>(
     prevValue = currentValue;
     return prevValue;
   };
+}
+
+function serializeArgs(args: unknown[]) {
+  return JSON.stringify(args, (_key, value) => serializeValue(value));
+}
+
+function serializeValue(value: unknown) {
+  if (value === undefined) {
+    return { __tsMemoizeType: 'undefined' };
+  }
+
+  if (typeof value === 'number') {
+    if (Number.isNaN(value)) {
+      return { __tsMemoizeType: 'NaN' };
+    }
+
+    if (value === Infinity) {
+      return { __tsMemoizeType: 'Infinity' };
+    }
+
+    if (value === -Infinity) {
+      return { __tsMemoizeType: '-Infinity' };
+    }
+  }
+
+  return value;
 }

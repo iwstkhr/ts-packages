@@ -77,4 +77,43 @@ describe('memoize', () => {
       expect(add.mock.calls).toHaveLength(1);
     });
   });
+
+  describe('When arguments are not interchangeable in JSON', () => {
+    test('does not treat undefined and null as the same arguments', () => {
+      const fn = vi.fn((value: unknown) => value);
+      const memoized = memoize(fn);
+
+      expect(memoized(undefined)).toBeUndefined();
+      expect(memoized(null)).toBeNull();
+      expect(fn.mock.calls).toHaveLength(2);
+    });
+
+    test('does not treat NaN and null as the same arguments', () => {
+      const fn = vi.fn((value: unknown) => value);
+      const memoized = memoize(fn);
+
+      expect(Number.isNaN(memoized(Number.NaN))).toBe(true);
+      expect(memoized(null)).toBeNull();
+      expect(fn.mock.calls).toHaveLength(2);
+    });
+
+    test('does not treat Infinity and null as the same arguments', () => {
+      const fn = vi.fn((value: unknown) => value);
+      const memoized = memoize(fn);
+
+      expect(memoized(Number.POSITIVE_INFINITY)).toBe(Number.POSITIVE_INFINITY);
+      expect(memoized(null)).toBeNull();
+      expect(fn.mock.calls).toHaveLength(2);
+    });
+
+    test('caches repeated undefined arguments', () => {
+      const fn = vi.fn((value: unknown) => value);
+      const memoized = memoize(fn);
+
+      memoized(undefined);
+      memoized(undefined);
+
+      expect(fn.mock.calls).toHaveLength(1);
+    });
+  });
 });
