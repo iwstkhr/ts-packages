@@ -38,6 +38,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # pnpm does not expand ${NODE_AUTH_TOKEN} in the project .npmrc, so store the token in the global config.
+          pnpm config set --location=global "//npm.pkg.github.com/:_authToken" "$NODE_AUTH_TOKEN"
+
           for package_json in packages/*/package.json; do
             package_name="$(node -p "require('./$package_json').name")"
             package_version="$(node -p "require('./$package_json').version")"
