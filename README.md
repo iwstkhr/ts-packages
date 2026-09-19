@@ -1,6 +1,7 @@
 # ts-packages monorepo
 
-This repository is an npm workspaces monorepo for small TypeScript libraries.
+This repository is a pnpm workspaces monorepo for small TypeScript libraries,
+with tasks orchestrated by [Turborepo](https://turborepo.com/).
 
 ## Packages
 
@@ -11,8 +12,8 @@ This repository is an npm workspaces monorepo for small TypeScript libraries.
 
 ## Requirements
 
-- Node.js 24.20.0 and pre-commit 4.6.2, specified in [`mise.toml`](./mise.toml)
-- npm
+- Node.js 24.21.0, pnpm 12.4.2, and pre-commit 4.6.2, specified in
+  [`mise.toml`](./mise.toml)
 
 Use [mise](https://mise.jdx.dev/) to install the specified tools:
 
@@ -25,7 +26,7 @@ mise install
 Install dependencies and enable git hooks:
 
 ```sh
-npm ci
+pnpm install
 pre-commit install
 ```
 
@@ -36,16 +37,16 @@ shellcheck).
 Run all checks:
 
 ```sh
-npm run check
-npm run typecheck
-npm test
-npm run build
+pnpm run check
+pnpm run typecheck
+pnpm test
+pnpm run build
 ```
 
 Run Biome with fixes:
 
 ```sh
-npm run check:write
+pnpm run check:write
 ```
 
 Run the full pre-commit suite against all files:
@@ -91,10 +92,10 @@ Before opening a pull request, make sure the following checks pass:
 
 ```sh
 pre-commit run --all-files
-npm run check
-npm run typecheck
-npm test
-npm run build
+pnpm run check
+pnpm run typecheck
+pnpm test
+pnpm run build
 ```
 
 ## CI
@@ -116,7 +117,7 @@ GitHub Actions.
 
 The workflow skips package versions that are already published. To release
 changes to a package, update its version in `packages/<package>/package.json`
-and keep `package-lock.json` in sync. Version bumps are not enforced by the
+and keep `pnpm-lock.yaml` in sync. Version bumps are not enforced by the
 repository's pre-commit hooks.
 
 Before publishing each new version, the package's `prepublishOnly` script

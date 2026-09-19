@@ -104,28 +104,28 @@ consumers.
 From the repository root, install dependencies:
 
 ```sh
-npm ci
+pnpm install
 ```
 
-Run the package checks through npm workspaces:
+Run the package checks through Turborepo:
 
 ```sh
-npm run check
-npm run typecheck
-npm test
-npm run build
+pnpm run check
+pnpm run typecheck
+pnpm test
+pnpm run build
 ```
 
 Run only this package's test suite:
 
 ```sh
-npm test --workspace @iwstkhr/svg-to-png
+pnpm --filter @iwstkhr/svg-to-png test
 ```
 
 Build only this package:
 
 ```sh
-npm run build --workspace @iwstkhr/svg-to-png
+pnpm --filter @iwstkhr/svg-to-png run build
 ```
 
 For release and versioning instructions, see

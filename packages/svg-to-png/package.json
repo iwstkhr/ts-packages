@@ -40,7 +40,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "check": "biome check .",
-    "prepublishOnly": "npm run check && npm run typecheck && npm test && npm run build",
+    "prepublishOnly": "pnpm run check && pnpm run typecheck && pnpm test && pnpm run build",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   }

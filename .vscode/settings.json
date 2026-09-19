@@ -7,7 +7,7 @@
   "biome.enabled": true,
   "biome.requireConfiguration": true,
   "js/ts.tsdk.path": "node_modules/typescript/lib",
-  "npm.packageManager": "npm",
+  "npm.packageManager": "pnpm",
   "files.exclude": {
     "**/dist": true
   },

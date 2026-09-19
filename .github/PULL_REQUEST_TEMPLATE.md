@@ -11,7 +11,7 @@
 <!-- Mark completed checks, or explain why they were not run. -->
 
 - [ ] `pre-commit run --all-files`
-- [ ] `npm run check`
-- [ ] `npm run typecheck`
-- [ ] `npm test`
-- [ ] `npm run build`
+- [ ] `pnpm run check`
+- [ ] `pnpm run typecheck`
+- [ ] `pnpm test`
+- [ ] `pnpm run build`
