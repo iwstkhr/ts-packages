@@ -65,8 +65,14 @@ function serializeSvg(input: SvgInput) {
 }
 
 function resolveSvgSize(input: SvgInput, options: SvgToPngOptions): SvgSize {
-  const width = options.width ?? readSvgWidth(input);
-  const height = options.height ?? readSvgHeight(input);
+  let width = options.width;
+  let height = options.height;
+
+  if (width === undefined || height === undefined) {
+    const size = readSvgSize(input);
+    width ??= size.width;
+    height ??= size.height;
+  }
 
   if (width <= 0) {
     throw new Error('SVG width must be greater than 0.');
@@ -79,20 +85,15 @@ function resolveSvgSize(input: SvgInput, options: SvgToPngOptions): SvgSize {
   return { width, height };
 }
 
-function readSvgWidth(input: SvgInput) {
+function readSvgSize(input: SvgInput): SvgSize {
   if (typeof input === 'string') {
-    return readSvgSizeFromString(input).width;
+    return readSvgSizeFromString(input);
   }
 
-  return input.width.baseVal.value || input.viewBox.baseVal.width;
-}
-
-function readSvgHeight(input: SvgInput) {
-  if (typeof input === 'string') {
-    return readSvgSizeFromString(input).height;
-  }
-
-  return input.height.baseVal.value || input.viewBox.baseVal.height;
+  return {
+    width: input.width.baseVal.value || input.viewBox.baseVal.width,
+    height: input.height.baseVal.value || input.viewBox.baseVal.height,
+  };
 }
 
 function readSvgSizeFromString(svg: string): SvgSize {
@@ -104,16 +105,13 @@ function readSvgSizeFromString(svg: string): SvgSize {
 
   const document = new DOMParser().parseFromString(svg, 'image/svg+xml');
   const svgElement = document.documentElement;
+  const viewBox = parseViewBox(svgElement.getAttribute('viewBox'));
 
   return {
     width:
-      parseSvgLength(svgElement.getAttribute('width')) ??
-      parseViewBox(svgElement.getAttribute('viewBox'))?.width ??
-      0,
+      parseSvgLength(svgElement.getAttribute('width')) ?? viewBox?.width ?? 0,
     height:
-      parseSvgLength(svgElement.getAttribute('height')) ??
-      parseViewBox(svgElement.getAttribute('viewBox'))?.height ??
-      0,
+      parseSvgLength(svgElement.getAttribute('height')) ?? viewBox?.height ?? 0,
   };
 }
 
