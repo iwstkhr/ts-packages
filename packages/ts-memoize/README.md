@@ -4,25 +4,19 @@ A small TypeScript memoization helper for caching the most recent function call.
 
 ## Overview
 
-`memoize` wraps a function and stores the result from the latest argument
-set. When the wrapped function is called again with the same arguments, the
-cached value is returned instead of calling the original function again.
+`memoize` wraps a function and stores the result from the latest argument set. When the wrapped function is called again with the same arguments, the cached value is returned instead of calling the original function again.
 
-Arguments are compared with a JSON-based serializer that distinguishes
-`undefined`, `null`, `NaN`, and infinite numbers. The helper is still best
-suited for simple JSON-serializable arguments.
+Arguments are compared with a JSON-based serializer that distinguishes `undefined`, `null`, `NaN`, and infinite numbers. The helper is still best suited for simple JSON-serializable arguments.
 
 ## Usage
 
-This package is published to GitHub Packages. Configure the package scope
-before installing:
+This package is published to GitHub Packages. Configure the package scope before installing:
 
 ```ini
 @iwstkhr:registry=https://npm.pkg.github.com/
 ```
 
-For private package access, authenticate npm with a GitHub token that can
-read packages.
+For private package access, authenticate npm with a GitHub token that can read packages.
 
 Install the package:
 
@@ -57,23 +51,14 @@ const message: string = memoized('TypeScript');
 
 - Only the most recent call is cached.
 - Different arguments replace the previous cache entry.
-- Promise-returning functions reuse the same promise for matching arguments,
-  including while it is pending. Once a rejection is handled, that promise
-  is dropped from the cache so the next call runs again. A rejection from an
-  older call does not clear a newer cache entry.
+- Promise-returning functions reuse the same promise for matching arguments, including while it is pending. Once a rejection is handled, that promise is dropped from the cache so the next call runs again. A rejection from an older call does not clear a newer cache entry.
 - Synchronous exceptions are not cached; the previous cache entry is retained.
 - `undefined`, `null`, `NaN`, and infinite numbers are distinct cache keys.
-- Arguments must still be serializable with `JSON.stringify` (for example, no
-  circular references or `BigInt` values).
+- Arguments must still be serializable with `JSON.stringify` (for example, no circular references or `BigInt` values).
 
-Comparison uses serialized values, not object identity or general deep
-equality. Property order can affect the key, and values such as functions,
-symbols, `Map`, and `Set` are not distinguished reliably. Avoid objects with
-the reserved `__tsMemoizeType` property: they can collide with the markers
-used for `undefined`, `NaN`, `Infinity`, and `-Infinity`.
+Comparison uses serialized values, not object identity or general deep equality. Property order can affect the key, and values such as functions, symbols, `Map`, and `Set` are not distinguished reliably. Avoid objects with the reserved `__tsMemoizeType` property: they can collide with the markers used for `undefined`, `NaN`, `Infinity`, and `-Infinity`.
 
-The wrapper does not forward a method's `this` receiver. Bind methods before
-passing them to `memoize` if they depend on `this`.
+The wrapper does not forward a method's `this` receiver. Bind methods before passing them to `memoize` if they depend on `this`.
 
 ## Development
 
@@ -104,5 +89,4 @@ Build only this package:
 pnpm --filter @iwstkhr/ts-memoize run build
 ```
 
-For release and versioning instructions, see
-[Publishing](../../README.md#publishing) in the repository README.
+For release and versioning instructions, see [Publishing](../../README.md#publishing) in the repository README.
