@@ -1,0 +1,47 @@
+{
+  "name": "@iwstkhr/svg-to-png",
+  "version": "0.1.1",
+  "description": "A small browser TypeScript helper for rendering SVG images to PNG.",
+  "license": "MIT",
+  "author": "Takahiro Iwasa",
+  "type": "module",
+  "main": "./dist/svg-to-png.js",
+  "types": "./dist/svg-to-png.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/svg-to-png.d.ts",
+      "import": "./dist/svg-to-png.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iwstkhr/ts-packages.git",
+    "directory": "packages/svg-to-png"
+  },
+  "bugs": {
+    "url": "https://github.com/iwstkhr/ts-packages/issues"
+  },
+  "homepage": "https://github.com/iwstkhr/ts-packages/tree/main/packages/svg-to-png#readme",
+  "keywords": [
+    "svg",
+    "png",
+    "canvas",
+    "image",
+    "typescript"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "biome check .",
+    "prepublishOnly": "pnpm run check && pnpm run typecheck && pnpm test && pnpm run build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  }
+}

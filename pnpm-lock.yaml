@@ -185,6 +185,8 @@ importers:
         specifier: 5.0.1
         version: 5.0.1(@types/node@24.13.6)(vite@8.3.0(@types/node@24.13.6))
 
+  packages/svg-to-png: {}
+
   packages/ts-memoize: {}
 
 packages:
