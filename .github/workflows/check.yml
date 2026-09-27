@@ -17,6 +17,9 @@ jobs:
   check:
     name: Check
     runs-on: ubuntu-latest
+    outputs:
+      # Job-level if conditions cannot read secrets, so expose only whether Slack is configured
+      slack-enabled: ${{ secrets.SLACK_BOT_TOKEN != '' && secrets.SLACK_CHANNEL_ID != '' }}
 
     steps:
       - name: Checkout
@@ -41,3 +44,15 @@ jobs:
 
       - name: Build packages
         run: pnpm run build
+
+  # Report only failures to Slack, and skip runs that cannot read the secrets, such as fork pull requests
+  notify:
+    name: Notify
+    needs: check
+    if: ${{ failure() && needs.check.outputs.slack-enabled == 'true' }}
+    uses: iwstkhr/shared-config/.github/workflows/slack-notify.yml@main
+    with:
+      status: ${{ needs.check.result }}
+    secrets:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}

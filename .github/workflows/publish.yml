@@ -100,3 +100,22 @@ jobs:
             git tag "$tag_name"
             git push origin "$tag_name"
           done
+
+  # Report to Slack when packages were published, when publishing or tagging failed, and on manual runs.
+  # Runs where Check did not succeed skip publishing, and Check reports its own failures.
+  notify:
+    name: Notify
+    needs: [publish, tag]
+    if: >-
+      ${{ always() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.publish.outputs.tags != '' ||
+        contains(needs.*.result, 'failure') ||
+        contains(needs.*.result, 'cancelled')) }}
+    uses: iwstkhr/shared-config/.github/workflows/slack-notify.yml@main
+    with:
+      status: ${{ contains(needs.*.result, 'failure') && 'failure' || contains(needs.*.result, 'cancelled') && 'cancelled' || 'success' }}
+      message: ${{ needs.publish.outputs.tags != '' && format('Published {0}', needs.publish.outputs.tags) || needs.publish.result == 'success' && 'No new package versions to publish' || '' }}
+    secrets:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
