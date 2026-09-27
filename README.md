@@ -97,7 +97,7 @@ pnpm run build
 
 ## CI
 
-Pull requests and pushes to `main` run the `Check` GitHub Actions workflow:
+Pull requests and pushes to `main` run the `[repo] Check` GitHub Actions workflow:
 
 - Biome
 - Type checking
@@ -110,7 +110,7 @@ Failures are reported to Slack with the `slack-notify.yml` reusable workflow fro
 
 Packages are published to GitHub Packages, not the public npm registry.
 
-Publishing runs from `.github/workflows/publish.yml` after the `Check` workflow succeeds on `main`. The workflow can also be started manually from GitHub Actions.
+Publishing runs from `.github/workflows/publish.yml` after the `[repo] Check` workflow succeeds on `main`. The workflow can also be started manually from GitHub Actions.
 
 The workflow reports to Slack when it publishes new versions, when publishing or tagging fails, and on every manual run.
 
