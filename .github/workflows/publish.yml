@@ -1,0 +1,102 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Check
+    types:
+      - completed
+    branches:
+      - main
+
+permissions: {}
+
+jobs:
+  publish:
+    name: Publish packages
+    runs-on: ubuntu-latest
+    # Only publish after Check succeeds on a push to main in this repository.
+    # The branches filter alone also matches pull requests from a fork's main branch.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      tags: ${{ steps.publish.outputs.tags }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+
+      - name: Setup mise
+        uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac
+        with:
+          cache: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Publish unpublished packages
+        id: publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # pnpm does not expand ${NODE_AUTH_TOKEN} in the project .npmrc, so store the token in the global config.
+          pnpm config set --location=global "//npm.pkg.github.com/:_authToken" "$NODE_AUTH_TOKEN"
+
+          tags=()
+          for package_json in packages/*/package.json; do
+            package_name="$(node -p "require('./$package_json').name")"
+            package_version="$(node -p "require('./$package_json').version")"
+            package_basename="${package_name##*/}"
+
+            if pnpm view "$package_name@$package_version" version \
+              --registry=https://npm.pkg.github.com/ >/dev/null 2>&1; then
+              echo "Package $package_name@$package_version is already published."
+              continue
+            fi
+
+            echo "Package $package_name@$package_version is not published yet."
+            pnpm --filter "$package_name" publish --no-git-checks
+            tags+=("$package_basename-v$package_version")
+          done
+
+          echo "tags=${tags[*]}" >> "$GITHUB_OUTPUT"
+
+  tag:
+    name: Tag published packages
+    runs-on: ubuntu-latest
+    needs: publish
+    if: needs.publish.outputs.tags != ''
+    # Runs no project code, so the contents: write token is not exposed to package scripts.
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Push tags
+        env:
+          TAGS: ${{ needs.publish.outputs.tags }}
+        run: |
+          for tag_name in $TAGS; do
+            if git ls-remote --exit-code --tags origin "refs/tags/$tag_name" >/dev/null 2>&1; then
+              echo "Tag $tag_name already exists."
+              continue
+            fi
+
+            git tag "$tag_name"
+            git push origin "$tag_name"
+          done
