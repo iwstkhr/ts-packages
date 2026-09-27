@@ -1,0 +1,46 @@
+{
+  "name": "@iwstkhr/ts-memoize",
+  "version": "0.1.1",
+  "description": "A small TypeScript memoization helper for caching the most recent function call.",
+  "license": "MIT",
+  "author": "Takahiro Iwasa",
+  "type": "module",
+  "main": "./dist/memoize.js",
+  "types": "./dist/memoize.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/memoize.d.ts",
+      "import": "./dist/memoize.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iwstkhr/ts-packages.git",
+    "directory": "packages/ts-memoize"
+  },
+  "bugs": {
+    "url": "https://github.com/iwstkhr/ts-packages/issues"
+  },
+  "homepage": "https://github.com/iwstkhr/ts-packages/tree/main/packages/ts-memoize#readme",
+  "keywords": [
+    "memoize",
+    "memoization",
+    "typescript",
+    "cache"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "biome check .",
+    "prepublishOnly": "pnpm run check && pnpm run typecheck && pnpm test && pnpm run build",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  }
+}
