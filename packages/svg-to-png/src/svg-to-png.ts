@@ -25,9 +25,18 @@ export async function svgToPngBlob(
   const { width, height } = resolveSvgSize(input, options);
   const scale = resolveScale(options.scale);
 
+  const canvasWidth = Math.round(width * scale);
+  const canvasHeight = Math.round(height * scale);
+  if (!Number.isFinite(canvasWidth) || canvasWidth <= 0) {
+    throw new Error('Canvas width must be finite and at least 1 pixel.');
+  }
+  if (!Number.isFinite(canvasHeight) || canvasHeight <= 0) {
+    throw new Error('Canvas height must be finite and at least 1 pixel.');
+  }
+
   const canvas = document.createElement('canvas');
-  canvas.width = Math.round(width * scale);
-  canvas.height = Math.round(height * scale);
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
 
   const context = canvas.getContext('2d');
   if (context === null) {

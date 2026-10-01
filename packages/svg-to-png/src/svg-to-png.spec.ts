@@ -46,3 +46,25 @@ describe('svgToPngBlob', () => {
     ).rejects.toThrow('canvas create');
   });
 });
+
+describe('canvas dimensions', () => {
+  test.each([
+    { width: 0.1, height: 1 },
+    { width: 1, height: 0.1 },
+    { width: 1, height: 1, scale: 0.1 },
+    { width: Number.MAX_VALUE, height: 1, scale: 2 },
+    { width: 1, height: Number.MAX_VALUE, scale: 2 },
+  ])(
+    'rejects invalid pixel dimensions for %o before creating a canvas',
+    async (options) => {
+      const createElement = vi.fn();
+      vi.stubGlobal('Image', class Image {});
+      vi.stubGlobal('document', { createElement });
+
+      await expect(svgToPngBlob('<svg></svg>', options)).rejects.toThrow(
+        /Canvas (width|height) must be finite and at least 1 pixel/,
+      );
+      expect(createElement).not.toHaveBeenCalled();
+    },
+  );
+});

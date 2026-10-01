@@ -62,7 +62,7 @@ The final canvas size is `Math.round(width * scale)` by `Math.round(height * sca
 
 Width and height are resolved independently: an explicit option takes precedence, then the SVG dimension, then the corresponding `viewBox` dimension. Setting only one dimension does not automatically calculate the other from the aspect ratio. For SVG strings, dimension attributes use their leading numeric value; units and percentages are not converted (for example, `100%` is read as `100`). For SVG elements, the browser's `baseVal.value` is used, with a `viewBox` fallback when it is zero.
 
-Resolved dimensions and `scale` must be greater than zero; non-positive values reject the promise. Rendering also rejects if the browser APIs are unavailable, the SVG image fails to load, the 2D context cannot be created, or PNG encoding fails.
+Resolved dimensions and `scale` must be finite and greater than zero. The final canvas dimensions must also be finite and at least one pixel after rounding; invalid values reject the promise. Rendering also rejects if the browser APIs are unavailable, the SVG image fails to load, the 2D context cannot be created, or PNG encoding fails.
 
 ### `svgToPngBlob(input, options?)`
 

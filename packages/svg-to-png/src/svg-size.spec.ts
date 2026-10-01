@@ -60,6 +60,15 @@ describe('resolveScale', () => {
     expect(resolveScale()).toBe(1);
   });
 
+  test.each([Number.NaN, Infinity, -Infinity])(
+    'rejects non-finite scale %s',
+    (scale) => {
+      expect(() => resolveScale(scale)).toThrow(
+        'scale must be greater than 0.',
+      );
+    },
+  );
+
   test('rejects non-positive scales', () => {
     expect(() => resolveScale(0)).toThrow('scale must be greater than 0.');
     expect(() => resolveScale(-2)).toThrow('scale must be greater than 0.');
@@ -73,6 +82,18 @@ describe('resolveSvgSize', () => {
       height: 20,
     });
   });
+
+  test.each([Number.NaN, Infinity, -Infinity])(
+    'rejects non-finite dimensions %s',
+    (value) => {
+      expect(() =>
+        resolveSvgSize('<svg></svg>', { width: value, height: 10 }),
+      ).toThrow('SVG width must be greater than 0.');
+      expect(() =>
+        resolveSvgSize('<svg></svg>', { width: 10, height: value }),
+      ).toThrow('SVG height must be greater than 0.');
+    },
+  );
 
   test('throws when the resolved size is not greater than 0', () => {
     expect(() =>

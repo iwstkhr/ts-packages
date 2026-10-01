@@ -23,11 +23,11 @@ export function resolveSvgSize(
     height ??= size.height;
   }
 
-  if (width <= 0) {
+  if (!Number.isFinite(width) || width <= 0) {
     throw new Error('SVG width must be greater than 0.');
   }
 
-  if (height <= 0) {
+  if (!Number.isFinite(height) || height <= 0) {
     throw new Error('SVG height must be greater than 0.');
   }
 
@@ -35,7 +35,7 @@ export function resolveSvgSize(
 }
 
 export function resolveScale(scale = 1) {
-  if (scale <= 0) {
+  if (!Number.isFinite(scale) || scale <= 0) {
     throw new Error('scale must be greater than 0.');
   }
 
