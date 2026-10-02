@@ -1,4 +1,4 @@
-name: "[repo] Check"
+name: "repo - Check"
 
 on:
   pull_request:

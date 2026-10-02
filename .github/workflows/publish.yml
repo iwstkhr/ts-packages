@@ -1,10 +1,10 @@
-name: "[repo] Publish"
+name: "repo - Publish"
 
 on:
   workflow_dispatch:
   workflow_run:
     workflows:
-      - "[repo] Check"
+      - "repo - Check"
     types:
       - completed
     branches:
