@@ -1,3 +1,11 @@
 packages:
   - packages/*
 saveExact: true
+
+# Supply chain protection
+# Do not install versions published less than 7 days (10080 minutes) ago
+minimumReleaseAge: 10080
+# Reject versions whose trust evidence (e.g. provenance) is weaker than earlier releases
+trustPolicy: no-downgrade
+# Block transitive dependencies from Git repositories or tarball URLs
+blockExoticSubdeps: true
