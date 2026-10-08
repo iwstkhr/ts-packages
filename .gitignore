@@ -34,3 +34,4 @@ pnpm-debug.log*
 !.vscode/extensions.json
 !.vscode/tasks.json
 !.vscode/launch.json
+.pre-commit-trivy-cache/
