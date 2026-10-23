@@ -1,4 +1,4 @@
-name: "repo - Check"
+name: "repo - CI"
 
 on:
   pull_request:
@@ -14,8 +14,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check:
-    name: Check
+  ci:
+    name: CI
     runs-on: ubuntu-latest
     outputs:
       # Job-level if conditions cannot read secrets, so expose only whether Slack is configured
@@ -48,11 +48,11 @@ jobs:
   # Report only failures to Slack, and skip runs that cannot read the secrets, such as fork pull requests
   notify:
     name: Notify
-    needs: check
-    if: ${{ failure() && needs.check.outputs.slack-enabled == 'true' }}
+    needs: ci
+    if: ${{ failure() && needs.ci.outputs.slack-enabled == 'true' }}
     uses: iwstkhr/shared-config/.github/workflows/slack-notify.yml@main
     with:
-      status: ${{ needs.check.result }}
+      status: ${{ needs.ci.result }}
     secrets:
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
       SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}

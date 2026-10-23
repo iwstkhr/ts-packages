@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows:
-      - "repo - Check"
+      - "repo - CI"
     types:
       - completed
     branches:
@@ -16,7 +16,7 @@ jobs:
   publish:
     name: Publish packages
     runs-on: ubuntu-latest
-    # Only publish after Check succeeds on a push to main in this repository.
+    # Only publish after CI succeeds on a push to main in this repository.
     # The branches filter alone also matches pull requests from a fork's main branch.
     if: >-
       github.event_name == 'workflow_dispatch' ||
@@ -102,7 +102,7 @@ jobs:
           done
 
   # Report to Slack when packages were published, when publishing or tagging failed, and on manual runs.
-  # Runs where Check did not succeed skip publishing, and Check reports its own failures.
+  # Runs where CI did not succeed skip publishing, and CI reports its own failures.
   notify:
     name: Notify
     needs: [publish, tag]
