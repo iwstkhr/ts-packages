@@ -15,7 +15,7 @@ permissions: {}
 jobs:
   publish:
     name: Publish packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     # Only publish after CI succeeds on a push to main in this repository.
     # The branches filter alone also matches pull requests from a fork's main branch.
     if: >-
@@ -74,7 +74,7 @@ jobs:
 
   tag:
     name: Tag published packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs: publish
     if: needs.publish.outputs.tags != ''
     # Runs no project code, so the contents: write token is not exposed to package scripts.

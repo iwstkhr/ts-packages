@@ -16,7 +16,7 @@ concurrency:
 jobs:
   ci:
     name: CI
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       # Job-level if conditions cannot read secrets, so expose only whether Slack is configured
       slack-enabled: ${{ secrets.SLACK_BOT_TOKEN != '' && secrets.SLACK_CHANNEL_ID != '' }}
