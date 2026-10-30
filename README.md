@@ -12,7 +12,7 @@ This repository is a pnpm workspaces monorepo for small TypeScript libraries, wi
 
 ## Requirements
 
-- Node.js 24.21.0, pnpm 12.4.2, and pre-commit 4.6.2, specified in [`mise.toml`](./mise.toml)
+- Node.js, pnpm, lefthook, and the tools its Git hooks run, specified in [`mise.toml`](./mise.toml)
 
 Use [mise](https://mise.jdx.dev/) to install the specified tools:
 
@@ -26,10 +26,10 @@ Install dependencies and enable git hooks:
 
 ```sh
 pnpm install
-pre-commit install
+lefthook install
 ```
 
-Hooks are defined in [`.pre-commit-config.yaml`](./.pre-commit-config.yaml) and run on commit (YAML checks, actionlint, Biome, gitleaks, markdownlint, shellcheck).
+[`lefthook.yml`](./lefthook.yml) loads the shared hooks from [shared-config](https://github.com/iwstkhr/shared-config), which run on commit (EditorConfig, yamllint, actionlint, Biome, gitleaks, rumdl, Semgrep, shellcheck, Trivy) and check the commit message with Cocogitto.
 
 Run all checks:
 
@@ -46,10 +46,10 @@ Run Biome with fixes:
 pnpm run check:write
 ```
 
-Run the full pre-commit suite against all files:
+Run every pre-commit hook against all files:
 
 ```sh
-pre-commit run --all-files
+lefthook run pre-commit --all-files
 ```
 
 ## Contributing
@@ -88,7 +88,7 @@ docs: update contributing instructions
 Before opening a pull request, make sure the following checks pass:
 
 ```sh
-pre-commit run --all-files
+lefthook run pre-commit --all-files
 pnpm run check
 pnpm run typecheck
 pnpm test
@@ -104,7 +104,7 @@ Pull requests and pushes to `main` run the `repo - CI` GitHub Actions workflow:
 - Tests
 - Build
 
-Failures are reported to Slack with the `slack-notify.yml` reusable workflow from [shared-config](https://github.com/iwstkhr/shared-config), using the `SLACK_BOT_TOKEN` and `SLACK_CHANNEL_ID` repository secrets. The `repo - Pre-commit` workflow reports its failures the same way.
+Failures are reported to Slack with the `slack-notify.yml` reusable workflow from [shared-config](https://github.com/iwstkhr/shared-config), using the `SLACK_BOT_TOKEN` and `SLACK_CHANNEL_ID` repository secrets. The `repo - Lefthook` workflow reports its failures the same way.
 
 ## Publishing
 
@@ -114,7 +114,7 @@ Publishing runs from `.github/workflows/publish.yml` after the `repo - CI` workf
 
 The workflow reports to Slack when it publishes new versions, when publishing or tagging fails, and on every manual run.
 
-The workflow skips package versions that are already published. To release changes to a package, update its version in `packages/<package>/package.json` and keep `pnpm-lock.yaml` in sync. Version bumps are not enforced by the repository's pre-commit hooks.
+The workflow skips package versions that are already published. To release changes to a package, update its version in `packages/<package>/package.json` and keep `pnpm-lock.yaml` in sync. Version bumps are not enforced by the repository's Git hooks.
 
 Before publishing each new version, the package's `prepublishOnly` script runs Biome, type checking, tests, and the build.
 
