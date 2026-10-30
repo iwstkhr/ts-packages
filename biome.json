@@ -31,5 +31,15 @@
         "organizeImports": "on"
       }
     }
+  },
+  "yaml": {
+    "formatter": {
+      "enabled": false
+    }
+  },
+  "markdown": {
+    "formatter": {
+      "enabled": false
+    }
   }
 }
