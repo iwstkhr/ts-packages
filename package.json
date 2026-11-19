@@ -2,7 +2,7 @@
   "name": "ts-packages",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "pnpm@12.19.0",
+  "packageManager": "pnpm@12.20.0",
   "scripts": {
     "build": "turbo run build",
     "check": "biome check .",
@@ -11,10 +11,10 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.6",
-    "@tsconfig/node24": "24.0.5",
+    "@biomejs/biome": "2.6.7",
+    "@tsconfig/node24": "24.0.6",
     "@types/node": "26.6.6",
-    "turbo": "2.11.10",
+    "turbo": "2.11.11",
     "typescript": "7.0.2",
     "vitest": "5.1.0"
   }
