@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.8",
-    "@tsconfig/node24": "24.0.6",
+    "@tsconfig/node26": "26.0.0",
     "@types/node": "26.6.6",
     "turbo": "2.11.12",
     "typescript": "7.0.2",
